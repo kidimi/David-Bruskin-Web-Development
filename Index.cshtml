@@ -1,0 +1,618 @@
+﻿@model Sabio.Web.Models.ViewModels.BaseViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_InspiniaLayout.cshtml";
+}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+
+@section Styles{
+    <style>
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+}
+
+@*Issue log (modal) template headers*@
+<div class="issueNameLogModal modal fade" id="myModal" role="dialog" data-target="#myModal">
+    <div class="modal-dialog modal-lg modal-content modal-header modal-body ibox-content">
+        <div class="ibox-content">
+            <div>
+                <table class="table issue-tracker">
+                    <thead>
+                        <tr colspan="1" class="m-b-lg">
+                            <!--# of columns you have-->
+                            <th class="col-lg-2">Orig Issue</br>ID / Log ID </th>
+                            <th class="col-lg-1">Priority/&emsp;&emsp;Status</th>
+                            <th class="col-lg-1">Date  </th>
+                            <th class="col-lg-2">Name</th>
+                            <th class="col-lg-2">Comments &emsp;&emsp;</th>
+                            <th class="col-lg-1">Employee </br> ID &emsp;</th>
+                            <th class="col-lg-1">Employee </br> Name &emsp;</th>
+                            <th class="col-lg-1">Contact/ </br> Vendor Id &emsp;</th>
+                            <th class="col-lg-1">Contact/ </br> Vendor Name &emsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody class="logDiv"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Issues Index</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+            <li>
+                <a>Account</a>
+            </li>
+            <li>
+                <a>Issues</a>
+            </li>
+            <li class="active">
+                <strong>Index</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Issues Index</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="m-b-lg">
+
+    @*Item (row) counter)*@
+                        <div>
+                            <p>Found <span class="bold counter">counter</span> items.</p>
+                        </div>
+
+    @*Sort menu dropdown*@
+                        <div class="m-t-md">
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-header " type="button" data-toggle="dropdown">
+                                        Sort by...
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" id="sortByPriority" class="sortPriority">Priority</a></li>
+                                        <li><a href="#" id="sortByStatus" class="sortStatus">Status</a></li>
+                                        <li><a href="#" id="sortByWeeks" class="sortWeeks">Weeks Elapsed</a></li>
+                                        <li><a href="#" id="sortByIssueName" class="sortIssueName">Issue Name</a></li>
+                                        <li><a href="#" id="sortByEmployeeLastName" class="sortEmployeeLastName">Last Modified By</a></li>
+                                        <li><a href="#" id="sortByDateAdded" class="sortDateAdded">Date Added</a></li>
+                                        <li><a href="#" id="sortByDateModified" class="sortDateModified">Date Modified</a></li>
+                                        <li><a href="#" id="sortByDateFixed" class="sortDateFixed">Date Fixed</a></li>
+                                        <li><a href="#" id="sortByAccountContactName" class="sortAccountContactName">Vendor/Contact</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+ @*Ascending/Descending sort radio buttons for conversion to oolor-coded labels*@
+                            <div class="form-group">
+                                <div class="radio" id="ascending">
+                                    <label>
+                                        <input type="radio" value="7" id="sortAscending" checked="" name="sortRadios" style="display:inline" />HIGH TO LOW
+                                    </label>
+                                </div>
+                                <div class="radio" id="descending">
+                                    <label>
+                                        <input type="radio" value="8" id="sortDescending" name="sortRadios" style="display:inline" />LOW TO HIGH
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="wrapper wrapper-content animated fadeInRight">
+                                <div class="row">
+                                </div>
+                            </div>
+
+@*New issue link to Create page*@
+                            <div class="ibox-title">
+                                <div class="ibox-tools">
+                                    <a href="" class="btn btn-primary btn-xs cmdCreate">Add new issue</a>
+                                </div>
+                            </div>
+
+@*Issues table headers*@
+                            <div class="ibox-content">
+                                <div>
+                                    <table class="table issue-tracker">
+                                        <thead>
+                                            <tr colspan="1" class="m-b-lg">
+                                                <!--# of columns you have-->
+                                                <th class="col-lg-1">Id# &emsp;&emsp;</th>
+                                                <th class="col-lg-1">Priority &ensp; Status &emsp;&emsp;</th>
+                                                <th class="col-lg-1">Weeks Elapsed &emsp;&emsp;&emsp;</th>
+                                                <th class="col-lg-1">Issue Name &emsp;&emsp; </th>
+                                                <th class="col-lg-2">Comments &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</th>
+                                                <th class="col-lg-1">Last Modified By &emsp;&emsp;</th>
+                                                <th class="col-lg-2">Dates &emsp;&emsp;&emsp;&emsp;</th>
+                                                <th class="col-lg-1">Vendor/Contact  &emsp;&emsp;  </th>
+                                                <th class="col-lg-1 editButton"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="issuesDiv" id="issuesDivId"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Issues table template populated by clone from database*@
+<script type="text/template" id="workingIssuesTemplate">
+
+        <tr>
+            <td>
+                <span class="id"></span>
+            </td>
+            <td>
+                <span class="form-control label label-danger issuePriorityId">HIGH</span><span class="form-control label label-success issueStatusId">PENDING</span>
+            </td>
+            <td>
+                <span class="elapsed"></span>
+            </td>
+            <td>
+                <a class="issueName"></a>
+            </td>
+            <td>
+                <small>
+                    <span class="comments"></span>
+                </small>
+            </td>
+            <td>
+                <span class="employeeLastName"></span>
+            </td>
+            <td>
+                Date added: <strong class="dateAdded"></strong><br />
+                Last modified: <strong class="dateModified"></strong><br />
+                Date fixed: <strong class="dateFixed"></strong><br />
+            </td>
+            <td>
+                <span class="accountContactName"></span>
+            </td>
+            <td class="text-right">
+                <button class="btn btn-primary btn-sm cmdEdit"><i class="fa fa-pencil"></i> EDIT</button>
+            </td>
+        </tr>
+    </script>
+
+@*Issues Log Template*@
+    <script type="text/template" id="issuesLogTemplate">
+        <tr>
+            <td>
+                <span class="logItemIssueId"></span>&emsp;&emsp;<span class="logItemLogId"></span>
+            </td>
+            <td>
+                <span class="logItemPriority"></span><span class="logItemStatus"></span>
+            </td>
+            <td>
+                <span class="logItemDate"></span>
+            </td>
+            <td>
+                <span class="logItemName"></span>
+            </td>
+            <td>
+                <span class="logItemComments"></span>
+            </td>
+            <td>
+                <span class="logItemEmployeeId"></span>
+            </td>
+            <td>
+                <span class="logItemEmployeeName"></span>
+            </td>
+            <td>
+                <span class="logItemVendorContactId"></span>
+            </td>
+            <td>
+                <span class="logItemVendorContactName"></span>
+            </td>
+        </tr>
+    </script>
+
+
+
+<script src="~/Themes/Inspinia_MVC5/Scripts/plugins/metisMenu/metisMenu.min.js"></script>
+    @section scripts{
+        <!-- Mainly scripts -->
+        <script src="~/Themes/Inspinia_MVC5/Scripts/plugins/fullcalendar/moment.min.js"></script>
+        <script src="~/Themes/Inspinia_MVC5/Scripts/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+        <!-- Custom and plugin javascript -->
+        <script src="~/Themes/Inspinia_MVC5/Scripts/plugins/pace/pace.min.js"></script>
+        <!-- Peity -->
+        <script src="~/Themes/Inspinia_MVC5/Scripts/plugins/peity/jquery.peity.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.0/jquery-ui.js"></script>
+        <!---->
+        <script src="~/Scripts/sabio.services.Accounts.js"></script>
+        <script>
+
+
+            sabio.page.accountId = @Model.AccountId;
+
+//Event listeners & handlers
+            sabio.page.startUp = function () {
+                sabio.services.Accounts.getIssuesByAccountId(sabio.page.accountId, sabio.page.onGetAllSuccess, sabio.page.onGetAllError);
+                $('.cmdCreate').on('click', sabio.page.handlers.create);
+                $('.issuesDiv').on('click', '.cmdEdit', sabio.page.handlers.edit);
+                $('.btn-search').on('click', sabio.page.handlers.search);
+                $('.sortid').on('click', sabio.page.handlers.map);
+                $('.sortPriority').on('click', sabio.page.handlers.map);
+                $('.sortStatus').on('click', sabio.page.handlers.map);
+                $('.sortWeeks').on('click', sabio.page.handlers.map);
+                $('.sortIssueName').on('click', sabio.page.handlers.map);
+                $('.sortEmployeeLastName').on('click', sabio.page.handlers.map);
+                $('.sortDateAdded').on('click', sabio.page.handlers.map);
+                $('.sortDateModified').on('click', sabio.page.handlers.map);
+                $('.sortDateFixed').on('click', sabio.page.handlers.map);
+                $('.sortAccountContactName').on('click', sabio.page.handlers.map);
+                $('.issuesDiv').on('click', '.issueName', sabio.page.handlers.showLogModal);
+            }
+
+        sabio.page.handlers.create = function (evt) {
+            evt.preventDefault();
+            window.location.href = '/Accounts/' + sabio.page.accountId + '/Issues/Create';
+        }
+
+        sabio.page.handlers.edit = function (evt) {
+            evt.preventDefault();
+            var id = $(this).attr('data-id');
+            window.location.href = '/Accounts/' + sabio.page.accountId + '/Issues/' + id + '/Edit';
+        }
+
+        sabio.page.onGetAllSuccess = function (data) {
+            sabio.page.issues = data.items;
+            sabio.page.renderIssues();
+        }
+
+        sabio.page.renderIssues = function () {
+            $('.issuesDiv').html('');
+            for (var i = 0; i < sabio.page.issues.length; i++) {
+                var issue = sabio.page.issues[i];
+                var row = sabio.page.populateClone(issue);
+                $('.issuesDiv').append(row);
+
+ //Item counter (amount of Index rows)
+                function counter() {
+                    var counter = sabio.page.issues.length;
+                    return counter;
+                }
+                $(".counter").text(counter);
+
+        sabio.page.onGetAllError = function (jqXHR) {
+            console.log(jqXHR);
+        }
+
+//Populate clone from database
+        sabio.page.populateClone = function (issue) {
+
+            var $clone = $($('#workingIssuesTemplate').html());
+            $clone.find('.cmdEdit').attr('data-id', issue.id);
+            $clone.find('.id').text(issue.id);
+            $clone.find('.issuePriorityId').text(issue.issuePriorityId);
+            $clone.find('.issueStatusId').text(issue.issueStatusId);
+            $clone.find('.elapsed').text(weeks() + " weeks");
+            $clone.find('.issueName').text(issue.name);
+            $clone.find('.comments').text(issue.comments);
+            $clone.find('.employeeLastName').text(issue.employeeCreated && (issue.employeeCreated.firstName + " " + issue.employeeCreated.lastName));
+            $clone.find('.dateAdded').text(moment(issue.dateAdded).format('MM/DD/YYYY hh:mm A'));
+            $clone.find('.dateModified').text(moment(issue.dateModified).format('MM/DD/YYYY hh:mm A'));
+            $clone.find('.dateFixed').text(issue.dateFixed ? moment(issue.dateFixed).format('MM/DD/YYYY hh:mm A') : '-');
+            $clone.find('.accountContactName').text(issue.accountContact && (issue.accountContact.firstName + " " + issue.accountContact.lastName));//add company name? accountContact.id
+
+
+//Changes 6 different raadio button values -- 3 for issuePriorityId, 3 for IssueStatusId -- into color-coded text labels
+            if (issue.issuePriorityId === 1) {
+                $clone.find(".issuePriorityId").text("HIGH").attr("class", "label label-danger");
+            } else if (issue.issuePriorityId === 2) {
+                $clone.find(".issuePriorityId").text("MED").attr("class", "label label-warning");
+            } else if (issue.issuePriorityId === 3) {
+                $clone.find(".issuePriorityId").text("LOW").attr("class", "label label-primary");
+            }
+
+            if (issue.issueStatusId === 4) {
+                $clone.find(".issueStatusId").text("REPORTED").attr("class", "label label-info");
+            } else if (issue.issueStatusId === 5) {
+                $clone.find(".issueStatusId").text("PENDING").attr("class", "label label-success");
+            } else {
+                $clone.find(".issueStatusId").text("FIXED").attr("class", "label label-default");
+            }
+
+//Measures elapsed weeks from when an issue was first reported (dateAdded) up to the current moment
+                function weeks(fromDate, toDate) {
+                    var toDate = new Date();
+                    var fromDate = new Date(issue.dateAdded);
+                    return ((toDate - fromDate) / 604800000).toFixed(1);
+                }
+                issue.sortWeeks = weeks();
+
+                return $clone;
+            }
+
+
+//Event handler to trigger modal using Issue Name as a link
+            sabio.page.handlers.showLogModal = function (event) {
+                event.preventDefault();
+                var issueId = $(this).closest('tr').find('.id').text();
+                sabio.page.renderLogIssues(issueId);
+                $('#myModal').modal('toggle');
+            }
+
+
+            sabio.page.renderLogIssues = function (issueId) {
+                $('.logDiv').html('');
+                for (var i = 0; i < sabio.page.issues.length; i++) {
+                    if (sabio.page.issues[i].id == issueId) {
+                        sabio.page.currentIssue = sabio.page.issues[i];
+                        break;
+                    }
+                }
+                var issueLogArray = sabio.page.currentIssue.issueLog;
+                for (var i = 0; i < issueLogArray.length; i++) {
+                    var logRow = sabio.page.populateLogClone(issueLogArray[i]);
+                    $('.logDiv').append(logRow);
+                }
+            }
+
+// Populate issues log(s)
+            sabio.page.populateLogClone = function (logItem) {
+
+                var $clone = $($('#issuesLogTemplate').html());
+                $clone.find('.logItemIssueId').text(logItem.issueId);
+                $clone.find('.logItemLogId').text(logItem.id);
+                $clone.find('.logItemPriority').text(logItem.issuePriorityId);
+                $clone.find('.logItemStatus').text(logItem.issueStatusId);
+                $clone.find('.logItemDate').text(moment(logItem.dateCreated).format('MM/DD/YYYY hh:mm A'));
+                $clone.find('.logItemName').text(logItem.name);
+                $clone.find('.logItemComments').text(logItem.comments);
+                $clone.find('.logItemEmployeeId').text(logItem.employeeId);
+                $clone.find('.logItemEmployeeName').text(logItem && (logItem.employeeFirstName + " " + logItem.employeeLastName));
+                $clone.find('.logItemVendorContactId').text(logItem.accountContactId);
+                $clone.find('.logItemVendorContactName').text(logItem && (logItem.accountContactFirstName + " " + logItem.accountContactLastName));
+
+//Changes 6 different database ints -- 3 for issuesLog issuePriorityId, 3 for issuesLog IssueStatusId -- into color-coded text labels
+                if (logItem.issuePriorityId === 1) {
+                    $clone.find(".logItemPriority").text("HIGH").attr("class", "label label-danger");
+                } else if (logItem.issuePriorityId === 2) {
+                    $clone.find(".logItemPriority").text("MED").attr("class", "label label-warning");
+                } else if (logItem.issuePriorityId === 3) {
+                    $clone.find(".logItemPriority").text("LOW").attr("class", "label label-primary");
+                }
+
+                if (logItem.issueStatusId === 4) {
+                    $clone.find(".logItemStatus").text("REPT'D").attr("class", "label label-info");
+                } else if (logItem.issueStatusId === 5) {
+                    $clone.find(".logItemStatus").text("PENDING").attr("class", "label label-success");
+                } else if (logItem.issueStatusId === 6) {
+                    $clone.find(".logItemStatus").text("FIXED").attr("class", "label label-default");
+                }
+
+                return $clone;
+            }
+
+
+  //SORTING Up and Down
+        sabio.page.handlers.map = function (evt) {
+            evt.preventDefault();
+            var sortProperty = $(evt.target).attr('id');
+
+            switch (sortProperty) {
+                case 'sortByPriority':
+                    sabio.page.issues.sort(function (a, b) {
+                        if ($("#sortAscending:checked").length > 0) {
+                            return a.issuePriorityId - b.issuePriorityId;
+                        } else {
+                            return b.issuePriorityId - a.issuePriorityId;
+                        }
+                    });
+                    break;
+
+                case 'sortByStatus':
+                    sabio.page.issues.sort(function (a, b) {
+                        if ($("#sortAscending:checked").length > 0) {
+                            return a.issueStatusId - b.issueStatusId;
+                        } else {
+                            return b.issueStatusId - a.issueStatusId;
+                        }
+                    });
+                    break;
+
+                case 'sortByWeeks':
+                    sabio.page.issues.sort(function (a, b) {
+                        if ($("#sortAscending:checked").length > 0) {
+                            return b.sortWeeks - a.sortWeeks;
+                        } else {
+                            return a.sortWeeks - b.sortWeeks;
+                        }
+                    });
+                    break;
+
+
+                case 'sortByIssueName':
+                    sabio.page.issues.sort(function (a, b) {
+                        var nameA = a.name.toUpperCase();
+                        var nameB = b.name.toUpperCase();
+                        if ($("#sortAscending:checked").length > 0) {
+                            if (nameA > nameB) {
+                                return -1;
+                            }
+                            if (nameA < nameB) {
+                                return 1;
+                            }
+                            return 0;
+                        } else {
+                            if (nameB > nameA) {
+                                return -1;
+                            }
+                            if (nameB < nameA) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
+                    break;
+
+
+                case 'sortByEmployeeLastName':
+                    sabio.page.issues.sort(function (a, b) {
+                        var employeeNameA = a.employeeCreated.lastName.toUpperCase() + " " + a.employeeCreated.firstName.toUpperCase();
+                        var employeeNameB = b.employeeCreated.lastName.toUpperCase() + " " + b.employeeCreated.firstName.toUpperCase();;
+                        if ($("#sortAscending:checked").length > 0) {
+                            if (employeeNameA > employeeNameB) {
+                                return -1;
+                            }
+                            if (employeeNameA < employeeNameB) {
+                                return 1;
+                            }
+                            return 0;
+                        } else {
+                            if (employeeNameB > employeeNameA) {
+                                return -1;
+                            }
+                            if (employeeNameB < employeeNameA) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
+                    break;
+
+
+                case 'sortByDateAdded':
+                    sabio.page.issues.sort(function (a, b) {
+                        var dateAddedA = a.dateAdded.toString();
+                        var dateAddedB = b.dateAdded.toString();
+                        if ($("#sortAscending:checked").length > 0) {
+                            if (dateAddedB < dateAddedA) {
+                                return -1;
+                            }
+                            if (dateAddedB > dateAddedA) {
+                                return 1;
+                            }
+                            return 0;
+                        } else {
+                            if (dateAddedA < dateAddedB) {
+                                return -1;
+                            }
+                            if (dateAddedA > dateAddedB) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
+                    break;
+
+
+                case 'sortByDateModified':
+                    sabio.page.issues.sort(function (a, b) {
+                        var dateModifiedA = a.dateModified.toString();
+                        var dateModifiedB = b.dateModified.toString();
+                        if ($("#sortAscending:checked").length > 0) {
+                            if (dateModifiedB < dateModifiedA) {
+                                return -1;
+                            }
+                            if (dateModifiedB > dateModifiedA) {
+                                return 1;
+                            }
+                            return 0;
+                        } else {
+                            if (dateModifiedA < dateModifiedB) {
+                                return -1;
+                            }
+                            if (dateModifiedA > dateModifiedB) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
+                    break;
+
+                case 'sortByDateFixed':
+                    sabio.page.issues.sort(function (a, b) {
+                        var dateFixedA = a.dateFixed.toString();
+                        var dateFixedB = b.dateFixed.toString();
+                        if ($("#sortAscending:checked").length > 0) {
+                            if (dateFixedB < dateFixedA) {
+                                return -1;
+                            }
+                            if (dateFixedB > dateFixedA) {
+                                return 1;
+                            }
+                            return 0;
+                        } else {
+                            if (dateFixedA < dateFixedB) {
+                                return -1;
+                            }
+                            if (dateFixedA > dateFixedB) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
+                    break;
+
+
+                case 'sortByAccountContactName':
+                    sabio.page.issues.sort(function (a, b) {
+                        var accountContactNameA = "";
+                        if (a.accountContact !== null) {
+                            accountContactNameA = a.accountContact.lastName.toUpperCase() + " " + a.accountContact.firstName.toUpperCase();
+                        }
+                        var accountContactNameB = "";
+                        if (b.accountContact !== null) {
+                            accountContactNameB = b.accountContact.lastName.toUpperCase() + " " + b.accountContact.firstName.toUpperCase();
+                        }
+                        if ($("#sortAscending:checked").length > 0) {
+                            if (accountContactNameA > accountContactNameB) {
+                                return -1;
+                            }
+                            if (accountContactNameA < accountContactNameB) {
+                                return 1;
+                            }
+                            return 0;
+                        } else {
+                            if (accountContactNameB > accountContactNameA) {
+                                return -1;
+                            }
+                            if (accountContactNameB < accountContactNameA) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
+                    break;
+            }
+
+
+            sabio.page.renderIssues();
+
+        }
+
+    </script>
+
+
+
+}

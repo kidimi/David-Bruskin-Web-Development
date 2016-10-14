@@ -1,0 +1,389 @@
+﻿@model Sabio.Web.Models.ViewModels.IssueViewModel
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_InspiniaLayout.cshtml";
+}
+
+@section Styles {
+
+    @* Styles for Fancy Check Boxes *@
+    <link href="/Themes/Inspinia_MVC5/Content/plugins/iCheck/custom.css" rel="stylesheet" />
+    <link href="~/Themes/Inspinia_MVC5/Content/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Themes/Inspinia_MVC5/Content/style.css" rel="stylesheet" />
+    <link href="~/Themes/Inspinia_MVC5/Content/animate.css" rel="stylesheet" />
+
+
+    <style>
+        .red {
+            color: red;
+        }
+
+        .btn-marginTop {
+            margin: 13px;
+        }
+    
+        .commentBox-NudgeRight {
+            margin-left: 10px;
+        }
+
+        .btn-NudgeLeft {
+            margin-left: -2px;
+        }
+
+        .commentLabel-NudgeLeft {
+            margin-left: -7px;
+        }
+
+
+    </style>
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Issues</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+            </li>
+            <li>
+                <a>Account</a>
+            </li>
+            <li>
+                <a>Issues</a>
+            </li>
+            <li class="active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5 id="pageCaption">New Issue</h5> @******************@
+                <div class="ibox-content">
+                    <form method="get" class="form-horizontal" id="form">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Account</label>
+                            <select name="accountId" id="accountId" class="col-sm-4 commentBox-NudgeRight" disabled>
+                                @*<option value="">(Select an Account)</option>*@
+                            </select>
+                        </div>
+
+                        @*IssuePriorityId radio buttons*@
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Issue Priority Id <span class="red">(select one)</span></label>
+                            <div class="col-sm-10">
+                                <div class="radio" id="issuePriorityId" name="priorityRadios">
+                                    <label>
+                                        <input type="radio" value="1" id="priority1" name="issuePriorityId">HIGH
+                                    </label>
+                                </div>
+
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" value="2" id="priority2" name="issuePriorityId">MED
+                                    </label>
+
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" value="3" id="priority3" name="issuePriorityId">LOW
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        @*IssueStatusId radio buttons*@
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Issue Status Id</label>
+                            <div class="col-sm-10">
+                                <div class="radio" id="issueStatusId" name="statusRadios">
+                                    <label>
+                                        <input type="radio" value="4" checked="" id="status1" name="issueStatusId">REPORTED
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" value="5" id="status2" name="issueStatusId">PENDING
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" value="6" id="status3" name="issueStatusId">FIXED
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        @*Issue Subject("Name")*@
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Issue Subject</label>
+                            <div class="col-sm-4">
+                                <textarea class="col-sm-6 form-control" id="name" name="name" placeholder="'Name' -- Issue 'headline' "></textarea>
+                            </div>
+                        </div>
+
+
+                        @*Comments("Comments")*@
+                        <label class="col-sm-2 control-label commentLabel-NudgeLeft">Comments</label>
+                        <div><textarea class="col-sm-4 commentBox-NudgeRight" rows="5" id="comments" name="comments"></textarea></div>
+
+
+                        @*AccountContactId("Vendors/Contacts")*@
+                        <label class="col-sm-2 control-label">Vendors/contacts <span class="red">(if relevant) </span></label>
+                        <select name="accountContactId" id="accountContactId" class="col-lg-1">
+                            <option value="">n/a</option>
+                        </select>
+
+
+                        @*Save Changes, Create New Issue, Return to Index btns*@
+                        <div>
+                            <div class="form-group">
+                                <div class="col-sm-6 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-margin btn-NudgeLeft btn-marginTop" id="cmdSave" type="submit">Save</button>
+                                    <button class="btn btn-primary btn-margin btn-NudgeLeft btn-marginTop hidden" id="cmdNewIssue" type="submit">Create another issue</button>
+                                    <button class="btn btn-white btn-margin btn-NudgeLeft btn-marginTop" id="cmdReset" type="submit">Reset form</button>
+                                    <button class="btn btn-success btn-margin btn-marginTop btn-NudgeLeft" id="cmdToIndex" type="submit">Return to Index</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <!--themes-->
+    <script src="~/Themes/Inspinia_MVC5/Scripts/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/sabio.services.issues.js"></script>
+    <script src="~/Scripts/sabio.services.accountContacts.js"></script>
+    <script src="~/Scripts/sabio.services.Accounts.js"></script>
+    <script>
+
+        sabio.page.startUp = function () {
+            sabio.page.accountId = @Model.AccountId;
+            sabio.page.id = @Model.Id;
+
+            sabio.page.initializeValidation();
+
+            //event listeners
+            $('#cmdCancel').on('click', sabio.page.handlers.cmdCancel);
+            $('#cmdSave').on('click', sabio.page.handlers.cmdSave);
+            $('#cmdNewIssue').on('click', sabio.page.handlers.cmdNewIssue);
+            $('#cmdToIndex').on('click', sabio.page.handlers.cmdToIndex);
+            $('#cmdReset').on('click', sabio.page.handlers.cmdReset);
+
+            sabio.page.setControlStatus();
+
+            sabio.services.Accounts.selectAccountContactsByAccountId(sabio.page.accountId, sabio.page.onGetAccountContactsSuccess, sabio.page.onGetAccountContactsError);        
+        }
+
+        sabio.page.onGetIssueSuccess = function(data) {
+            sabio.page.issue = data.item;
+
+            $('#accountId').val(sabio.page.accountId);
+            if (sabio.page.issue.issuePriorityId === 1) {
+                $('#priority1').attr('checked', true);
+            } else if (sabio.page.issue.issuePriorityId === 2) {
+                $('#priority2').attr('checked', true);
+            } else $('#priority3').attr('checked', true);
+
+
+            if (sabio.page.issue.issueStatusId === 4) {
+                $('#status1').attr('checked', true);
+            } else if (sabio.page.issue.issueStatusId === 5) {
+                $('#status2').attr('checked', true);
+            } else $('#status3').attr('checked', true);
+
+            $('#id').val(sabio.page.issue.id);
+            $('#name').val(sabio.page.issue.name);
+            $('#comments').val(sabio.page.issue.comments);
+
+            if (sabio.page.issue.accountContact){
+                $('#accountContactId').val(sabio.page.issue.accountContact.id);
+            } 
+            
+
+            if (sabio.page.id !== null) {
+                // keep original values for cancellation purposes
+                sabio.page.initValues = $('#form').serialize() + '&accountId=' + $('#accountId').val();
+            }
+            
+        }
+
+        //"Save" button
+        sabio.page.handlers.cmdSave = function (ev) {
+            ev.preventDefault();
+            if ($('#form').valid()) {
+                var data = $('#form').serialize() + '&accountId=' + $('#accountId').val();
+                if (sabio.page.id) {
+                    if (sabio.page.initValues === data) {
+                        swal({
+                            title: "WAIT!",
+                            text: "You have to <span style='color:#F8BB86 '>change<span> something first!",
+                            html: true
+                        });
+                    } else {
+                        data += "&id=" + sabio.page.id;
+                        sabio.services.issues.put(sabio.page.id, data, sabio.page.onPutSuccess, sabio.page.onPutError, swal("Good job!", "You updated the issue!", "success"));
+                        $('#cmdNewIssue').removeClass('.hidden');
+                    }
+                } else {
+                    sabio.services.issues.post(data, sabio.page.onPostSuccess, sabio.page.onPostError);
+                    $('#cmdNewIssue').removeClass('.hidden');
+                }
+            }
+        }
+
+
+        sabio.page.onGetAccountContactsSuccess = function (data) {
+            if(data.items){
+                for (var i = 0; i < data.items.length; i++) {
+                    var accountContact = data.items[i];
+                    var html = "<option value='" + accountContact.id + "'>"
+                        + accountContact.lastName + "</option>"
+                    $('#accountContactId').append(html);
+                }
+            }
+            sabio.services.Accounts.selectAll(sabio.page.onGetAccountsSuccess, sabio.page.onGetAccountssError);
+        }
+
+        sabio.page.onGetAccountContactsError = function (jqXHR) {
+            console.log(jqXHR.responseText);
+        };
+
+        sabio.page.onGetAccountsSuccess = function (data) {
+            if(data.items){
+                for (var i = 0; i < data.items.length; i++) {
+                    var account = data.items[i];
+                    var html = "<option value='" + account.id + "'>"
+                        + account.accountName + "</option>"
+                    $('#accountId').append(html);
+                }
+            }
+            if (sabio.page.id) {
+                sabio.services.issues.getById(sabio.page.id, sabio.page.onGetIssueSuccess, sabio.page.onGetIssueError);
+            }
+            else{
+                // for new entry use accountId passed into page.
+                $('#accountId').val(sabio.page.accountId);
+            }
+        }
+
+        sabio.page.onGetAccountsError = function (jqXHR) {
+            console.log(jqXHR.responseText);
+        };
+
+
+        //client-side validation
+        sabio.page.initializeValidation = function(){
+            $.validator.setDefaults({
+                debug: true
+            });
+
+            $('#form').validate({
+
+                rules: {
+                    "issuePriorityId": {
+                        required: true
+                    }
+                    , "name": {
+                        required: true
+                        , maxlength: 150
+                    }
+                },
+
+                errorPlacement: function() {
+                    if (($("#priority1") || ("#priority2" || ("#priority3").is(":checked")) == 0) && ($('name') != null)) {
+                        swal({
+                            title: "WAIT!",
+                            text: "You need a Priority ID <span style='color:#F8BB86'>AND<span style='color: black'> a Subject!",
+                            html: true
+                        })
+                    }
+                }
+            });
+        }
+
+
+        sabio.page.onPostSuccess = function (data, status, jqXHR) {
+            sabio.page.id = data.item || 0;
+            console.log("post success");
+            swal("Good job!", "You saved the issue!", "success"),
+            sabio.page.setControlStatus();
+        }
+
+        sabio.page.onPostError = function (jqXHR) {
+            console.error(jqXHR.responseText);
+        }
+
+
+        sabio.page.onPutSuccess = function (data, status, jqXHR) {
+            console.log("put success");
+            sabio.page.setControlStatus();
+        }
+
+        sabio.page.onPutError = function (jqXHR) {
+            console.error(jqXHR.responseText);
+        }
+
+
+        //"Create another issue" button
+        sabio.page.handlers.cmdNewIssue = function (evt) {
+            evt.preventDefault();
+            $('#pageCaption').text("New Issue");
+            $('#cmdSave').text("Save");
+            $('#cmdNewIssue').addClass('hidden');
+            $('#form').find('#issuePriorityId, #issueStatusId, #name, #comments, #accountContactId').not("#accountId").val('');
+            $('input[name="issuePriorityId"]').attr('checked', false);
+            $('input[name="issueStatusId"]').attr('checked', false);
+        }
+
+     
+        //"Reset" (form) button
+        sabio.page.handlers.cmdReset = function (evt) {
+            evt.preventDefault();
+            $('#cmdSave').text("Save");
+            $('#cmdNewIssue').addClass('hidden');
+            $('#form').find('#issuePriorityId, #issueStatusId, #name, #comments, #accountContactId').not("#accountId").val('');
+            $('input[name="issuePriorityId"]').attr('checked', false);
+            $('input[name="issueStatusId"]').attr('checked', false);
+        }
+
+        //"Return to index" button
+        sabio.page.handlers.cmdToIndex = function (evt) {
+            evt.preventDefault();
+            $('#form')[0].reset();
+            window.location.href = '/Accounts/' + sabio.page.accountId + '/Issues/';
+        }
+
+        sabio.page.setControlStatus = function () {
+            if (sabio.page.id) {
+                $('#cmdSave').text("Update This Issue");
+                $('#pageCaption').text("Update This Issue");
+                $('#cmdNewIssue').removeClass('hidden');
+            } else {
+                $('#cmdSave').text("Save");
+                $('#pageCaption').text("New Issue");
+                $('#cmdNewIssue').addClass('hidden');
+            }
+        }
+
+    </script>
+
+}
+
+
